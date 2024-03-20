@@ -1,0 +1,59 @@
+import java.util.*;
+
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+    
+    TreeNode(int x) {
+        val = x;
+    }
+}
+
+class Solution {
+    public List<Integer> rightSideView(TreeNode root) {
+        if (root == null) return new ArrayList<Integer>();
+        
+        ArrayDeque<TreeNode> nextLevel = new ArrayDeque() {{ offer(root); }};
+        ArrayDeque<TreeNode> currLevel = new ArrayDeque();        
+        List<Integer> rightside = new ArrayList();
+        
+        TreeNode node = null;
+        while (!nextLevel.isEmpty()) {
+            // prepare for the next level
+            currLevel = nextLevel;
+            nextLevel = new ArrayDeque<>();
+
+            while (! currLevel.isEmpty()) {
+                node = currLevel.poll();
+
+                // add child nodes of the current level
+                // in the queue for the next level
+                if (node.left != null) 
+                    nextLevel.offer(node.left);    
+                if (node.right != null) 
+                    nextLevel.offer(node.right);
+            }
+            
+            // The current level is finished.
+            // Its last element is the rightmost one.
+            if (currLevel.isEmpty()) 
+                rightside.add(node.val);    
+        }
+        return rightside;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        TreeNode root = new TreeNode(1);
+        root.left = new TreeNode(2);
+        root.right = new TreeNode(3);
+        root.left.right = new TreeNode(5);
+        root.right.right = new TreeNode(4);
+        
+        Solution solution = new Solution();
+        List<Integer> result = solution.rightSideView(root);
+        System.out.println("Output: " + result);
+    }
+}
